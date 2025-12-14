@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ambuj Kumar Pandey | AIML Engineer & Full Stack Developer</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary: #0ea5e9;
+        --secondary: #8b5cf6;
+        --dark: #0f172a;
+        --glass: rgba(15, 23, 42, 0.6);
+        --glass-border: rgba(255, 255, 255, 0.1);
+      }
+
+      body {
+        font-family: "Outfit", sans-serif;
+        background: radial-gradient(
+          circle at 50% 50%,
+          #1e293b 0%,
+          #0f172a 100%
+        );
+        color: white;
+        overflow-x: hidden;
+        margin: 0;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--dark);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 4px;
+      }
+
+      /* 3D Canvas Background */
+      #canvas-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      /* Glassmorphism Classes */
+      .glass-card {
+        background: var(--glass);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.25);
+        border-color: rgba(14, 165, 233, 0.4);
+      }
+
+      .glass-nav {
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--glass-border);
+      }
+
+      /* --- RESUME SIDEBAR LOGIC (UPDATED FOR MOBILE) --- */
+      #main-content {
+        transition: width 0.5s ease;
+        width: 100%;
+        position: relative;
+      }
+
+      #resume-sidebar {
+        position: fixed;
+        right: -50%; /* Desktop default hidden */
+        top: 0;
+        width: 50%;
+        height: 100vh;
+        background: #1e293b;
+        transition: right 0.5s ease;
+        z-index: 100; /* Increased Z-Index so it sits above everything on mobile */
+        border-left: 2px solid var(--primary);
+        box-shadow: -5px 0 50px rgba(0, 0, 0, 0.8);
+        display: flex;
+        flex-direction: column;
+      }
+
+      #resume-sidebar.active {
+        right: 0;
+      }
+
+      body.split-mode #main-content {
+        width: 50%;
+      }
+
+      /* Mobile Adjustments */
+      @media (max-width: 1024px) {
+        #resume-sidebar {
+          width: 100%;
+          right: -100%; /* Fully hidden off-screen */
+        }
+
+        /* When active on mobile, cover the whole screen */
+        #resume-sidebar.active {
+          right: 0;
+        }
+
+        /* Hide main content behind the sidebar on mobile */
+        body.split-mode #main-content {
+          width: 100%;
+          display: none;
+        }
+      }
+
+      .custom-container {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      @media (min-width: 1024px) {
+        .custom-container {
+          padding-left: 6rem;
+          padding-right: 6rem;
+        }
+      }
+
+      /* Utilities */
+      .text-gradient {
+        background: linear-gradient(to right, #38bdf8, #c084fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .section-title {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 2rem;
+      }
+
+      .section-title::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: var(--primary);
+        border-radius: 2px;
+      }
+
+      .iframe-container {
+        flex-grow: 1;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* --- NEW CIRCULAR ORBIT ANIMATION STYLES --- */
+      .orbit-center {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .orbit-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        /* Logic: Center item -> Rotate axis -> Push out by Radius -> Rotate item back upright */
+        transform: translate(-50%, -50%) rotate(var(--angle))
+          translate(var(--radius)) rotate(calc(-1 * var(--angle)));
+        transition: all 0.5s ease-out;
+      }
+
+      /* Mobile Radius */
+      :root {
+        --orbit-radius: 140px;
+      }
+
+      /* Desktop Radius */
+      @media (min-width: 768px) {
+        :root {
+          --orbit-radius: 210px;
+        }
+      }
+
+      /* Floating Animation for icons */
+      @keyframes float-orbit {
+        0%,
+        100% {
+          margin-top: 0px;
+        }
+        50% {
+          margin-top: -10px;
+        }
+      }
+
+      .orbit-animate {
+        animation: float-orbit 3s ease-in-out infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+
+    <nav class="fixed w-full z-40 glass-nav py-4">
+      <div class="custom-container flex justify-between items-center w-full">
+        <a
+          href="#"
+          class="text-2xl font-bold font-mono text-white tracking-tighter"
+        >
+          <span class="text-cyan-400">&lt;</span>AmbujPandey<span
+            class="text-cyan-400"
+            >/&gt;</span
+          >
+        </a>
+        <div
+          class="hidden md:flex space-x-8 text-sm font-semibold uppercase tracking-widest text-gray-300"
+        >
+          <a href="#about" class="hover:text-cyan-400 transition">About</a>
+          <a href="#skills" class="hover:text-cyan-400 transition">Skills</a>
+          <a href="#projects" class="hover:text-cyan-400 transition"
+            >Projects</a
+          >
+          <a href="#achievements" class="hover:text-cyan-400 transition"
+            >Achievements</a
+          >
+          <a href="#contact" class="hover:text-cyan-400 transition">Contact</a>
+        </div>
+        <button
+          class="md:hidden text-white text-2xl"
+          onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      <div
+        id="mobile-menu"
+        class="hidden absolute top-full left-0 w-full glass-nav flex flex-col items-center py-4 space-y-4 md:hidden"
+      >
+        <a href="#about" class="text-white">About</a>
+        <a href="#skills" class="text-white">Skills</a>
+        <a href="#projects" class="text-white">Projects</a>
+        <a href="#contact" class="text-white">Contact</a>
+      </div>
+    </nav>
+
+    <button
+      id="toggle-resume-btn"
+      onclick="toggleResume()"
+      class="fixed bottom-8 right-8 z-50 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-cyan-500/50 transition transform hover:scale-105 font-bold flex items-center gap-2"
+    >
+      <i class="fas fa-file-pdf"></i> <span id="btn-text">View Resume</span>
+    </button>
+
+    <div id="resume-sidebar">
+      <div
+        class="p-4 bg-slate-900 flex justify-between items-center border-b border-gray-700"
+      >
+        <h2 class="text-xl font-bold text-white">My Resume</h2>
+        <div class="flex gap-4">
+          <a
+            href="./Ambuj__Kumar_Pandey__Resume.pdf"
+            download
+            class="text-cyan-400 hover:text-white"
+            ><i class="fas fa-download"></i> Download</a
+          >
+          <button
+            onclick="toggleResume()"
+            class="text-red-400 hover:text-red-600"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+      </div>
+      <div class="iframe-container bg-white">
+        <iframe
+          src="./Ambuj__Kumar_Pandey__Resume.pdf"
+          class="w-full h-full border-0"
+          title="Resume PDF"
+        >
+          <p class="text-black p-4">
+            Your browser does not support PDFs.
+            <a href="./Ambuj__Kumar_Pandey__Resume.pdf">Download the PDF</a>.
+          </p>
+        </iframe>
+      </div>
+    </div>
+
+    <div id="main-content">
+      <section
+        class="min-h-screen flex items-center justify-center pt-20 px-6 relative"
+      >
+        <div class="custom-container grid md:grid-cols-2 gap-12 items-center">
+          <div class="order-2 md:order-1 space-y-6 z-10">
+            <div
+              class="inline-block px-3 py-1 rounded-full bg-cyan-900/30 border border-cyan-500/30 text-cyan-400 text-sm font-semibold mb-2"
+            >
+              Welcome to my portfolio
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold leading-tight">
+              Hi, I'm <br />
+              <span class="text-gradient">Ambuj Pandey</span>
+            </h1>
+            <p class="text-xl text-white-400 max-w-lg">
+              🏆 2x CodeQuest Winner || B.Tech(CSE-AIML) || MERN Stack Developer
+              || Data Analyst | DSA || ML|| DL
+            </p>
+            <p class="text-gray-300">
+              A proactive B.Tech AIML student with hands-on experience
+              developing full-stack applications using the MERN stack, Next.js,
+              and Firebase. Seeking a challenging Software Development role
+              tobuilduser-centric, AI-integrated web solutions and contribute to
+              innovative software projects.
+            </p>
+            <div class="flex gap-4 pt-4">
+              <a
+                href="#projects"
+                class="px-8 py-3 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-bold transition"
+                >View Projects</a
+              >
+              <a
+                href="https://github.com/Ambujpandey1"
+                target="_blank"
+                class="px-8 py-3 rounded-lg border border-gray-600 hover:border-cyan-400 hover:text-cyan-400 transition flex items-center gap-2"
+              >
+                <i class="fab fa-github"></i> GitHub
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="order-1 md:order-2 orbit-center relative"
+            style="height: 400px"
+          >
+            <div
+              class="relative w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-cyan-500/30 p-2 animate-pulse-slow z-10 bg-slate-900/50 backdrop-blur-sm"
+            >
+              <img
+                src="./AmbujPhoto.jpeg"
+                onerror="this.src='https://placehold.co/400x400/1e293b/FFF?text=AP'"
+                alt="Ambuj Kumar Pandey"
+                class="w-full h-full object-cover rounded-full shadow-2xl shadow-cyan-500/20"
+              />
+            </div>
+
+            <div
+              class="orbit-icon orbit-animate"
+              style="
+                --angle: 0deg;
+                --radius: var(--orbit-radius);
+                animation-delay: 0s;
+              "
+            >
+              <div
+                class="bg-slate-800 p-3 rounded-xl border border-gray-700 shadow-lg"
+              >
+                <i class="fab fa-react text-2xl text-blue-400"></i>
+              </div>
+            </div>
+
+            <div
+              class="orbit-icon orbit-animate"
+              style="
+                --angle: 45deg;
+                --radius: var(--orbit-radius);
+                animation-delay: 0.5s;
+              "
+            >
+              <div
+                class="bg-slate-800 p-3 rounded-xl border border-gray-700 shadow-lg"
+              >
+                <i class="fab fa-python text-2xl text-yellow-400"></i>
+              </div>
+            </div>
+
+            <div
+              class="orbit-icon orbit-animate"
+              style="
+                --angle: 90deg;
+                --radius: var(--orbit-radius);
+                animation-delay: 1s;
+              "
+            >
+              <div
+                class="bg-slate-800 p-3 rounded-xl border border-gray-700 shadow-lg"
+              >
+                <i class="fab fa-js text-2xl text-yellow-300"></i>
+              </div>
+            </div>
+
+            <div
+              class="orbit-icon orbit-animate"
+              style="
+                --angle: 135deg;
+                --radius: var(--orbit-radius);
+                animation-delay: 1.5s;
+              "
+            >
+              <div
+                class="bg-slate-800 p-3 rounded-xl border border-gray-700 shadow-lg"
+              >
+                <i class="fab fa-java text-2xl text-red-400"></i>
+              </div>
+            </div>
+
+            <div
+              class="orbit-icon orbit-animate"
+              style="
+                --angle: 180deg;
+                --radius: var(--orbit-radius);
+                animation-delay: 2s;
+              "
+            >
+              <div
+                class="bg-slate-800 p-3 rounded-xl border border-gray-700 shadow-lg"
+              >
+                <i class="fab fa-node-js text-2xl text-green-500"></i>
+              </div>
+            </div>
+
+            <div
+              class="orbit-icon orbit-animate"
+              style="
+                --angle: 225deg;
+                --radius: var(--orbit-radius);
+                animation-delay: 2.5s;
+              "
+            >
+              <div
+                class="bg-slate-800 p-3 rounded-xl border border-gray-700 shadow-lg"
+              >
+                <i class="fas fa-brain text-2xl text-purple-400"></i>
+              </div>
+            </div>
+
+            <div
+              class="orbit-icon orbit-animate"
+              style="
+                --angle: 270deg;
+                --radius: var(--orbit-radius);
+                animation-delay: 3s;
+              "
+            >
+              <div
+                class="bg-slate-800 p-3 rounded-xl border border-gray-700 shadow-lg"
+              >
+                <i class="fas fa-project-diagram text-2xl text-blue-400"></i>
+              </div>
+            </div>
+
+            <div
+              class="orbit-icon orbit-animate"
+              style="
+                --angle: 315deg;
+                --radius: var(--orbit-radius);
+                animation-delay: 3.5s;
+              "
+            >
+              <div
+                class="bg-slate-800 p-3 rounded-xl border border-gray-700 shadow-lg"
+              >
+                <i class="fas fa-microchip text-2xl text-orange-400"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="py-20 bg-slate-900/30">
+        <div class="custom-container">
+          <h2
+            class="text-3xl md:text-4xl font-bold mb-12 text-center section-title"
+          >
+            About & Education
+          </h2>
+
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="space-y-6">
+              <h3 class="text-2xl font-semibold text-cyan-400 mb-4">
+                <i class="fas fa-graduation-cap mr-2"></i> Education
+              </h3>
+
+              <div class="glass-card p-6 relative overflow-hidden group">
+                <div class="absolute top-0 left-0 w-1 h-full bg-cyan-500"></div>
+                <h4 class="text-xl font-bold text-white">B.Tech in AIML</h4>
+                <p class="text-cyan-300">
+                  Greater Noida Institute of Technology (AKTU)
+                </p>
+                <p class="text-white-400 text-sm">2022 - 2026 | CGPA: 8.01</p>
+              </div>
+
+              <div class="glass-card p-6 relative overflow-hidden group">
+                <div
+                  class="absolute top-0 left-0 w-1 h-full bg-purple-500"
+                ></div>
+                <h4 class="text-xl font-bold text-white">
+                  Intermediate (12th)
+                </h4>
+                <p class="text-purple-300">Rais Ahmad Inter College</p>
+                <p class="text-white-400 text-sm">2019 - 2021 | 81.6%</p>
+              </div>
+
+              <div class="glass-card p-6 relative overflow-hidden group">
+                <div class="absolute top-0 left-0 w-1 h-full bg-pink-500"></div>
+                <h4 class="text-xl font-bold text-white">High School (10th)</h4>
+                <p class="text-pink-300">Fazel E Rahamania Inter College</p>
+                <p class="text-white-400 text-sm">2017 - 2019 | 83.01%</p>
+              </div>
+            </div>
+
+            <div class="space-y-6">
+              <h3 class="text-2xl font-semibold text-cyan-400 mb-4">
+                <i class="fas fa-certificate mr-2"></i> Training &
+                Certifications
+              </h3>
+
+              <div class="glass-card p-6">
+                <ul class="space-y-4">
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-green-400 mt-1 mr-3"></i>
+                    <div>
+                      <strong class="block text-white">AIML Training</strong>
+                      <span class="text-gray-400 text-sm"
+                        >E & ICT Academy, IIT Kanpur (May - Aug 2025)</span
+                      >
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-green-400 mt-1 mr-3"></i>
+                    <div>
+                      <strong class="block text-white">CRP Training</strong>
+                      <span class="text-gray-400 text-sm"
+                        >CSDC GNIOT (May - Aug 2025)</span
+                      >
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-award text-yellow-400 mt-1 mr-3"></i>
+                    <div>
+                      <strong class="block text-white">AMCAT Certified</strong>
+                      <span class="text-gray-400 text-sm">For IT Industry</span>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-award text-yellow-400 mt-1 mr-3"></i>
+                    <div>
+                      <strong class="block text-white"
+                        >Student Development Program on C</strong
+                      >
+                      <span class="text-gray-400 text-sm">E & ICT</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="skills" class="py-20">
+        <div class="custom-container">
+          <h2
+            class="text-3xl md:text-4xl font-bold mb-12 text-center section-title"
+          >
+            Technical Skills
+          </h2>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="glass-card p-6">
+              <h3 class="text-xl font-bold mb-4 text-cyan-300">Languages</h3>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >Java</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >JavaScript</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >C</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >Python</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >SQL</span
+                >
+              </div>
+            </div>
+
+            <div class="glass-card p-6">
+              <h3 class="text-xl font-bold mb-4 text-purple-300">
+                Web Frameworks
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >React.js</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >Next.js</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >Node.js</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >Express.js</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >Tailwind CSS</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >HTML/CSS</span
+                >
+              </div>
+            </div>
+
+            <div class="glass-card p-6">
+              <h3 class="text-xl font-bold mb-4 text-pink-300">
+                Data Base & AI/ML
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >MongoDB</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >MySQL</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >NumPy</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >Pandas</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >NLP</span
+                >
+                <span
+                  class="px-3 py-1 rounded bg-slate-800 border border-slate-600 text-sm"
+                  >Deep Learning</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 glass-card p-6">
+            <h3 class="text-xl font-bold mb-4 text-white">CS Fundamentals</h3>
+            <div
+              class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm text-gray-400"
+            >
+              <div class="p-2 border border-slate-700 rounded">DSA</div>
+              <div class="p-2 border border-slate-700 rounded">OOPS</div>
+              <div class="p-2 border border-slate-700 rounded">DBMS</div>
+              <div class="p-2 border border-slate-700 rounded">CN & OS</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" class="py-20 bg-slate-900/30">
+        <div class="custom-container">
+          <h2
+            class="text-3xl md:text-4xl font-bold mb-12 text-center section-title"
+          >
+            Featured Projects
+          </h2>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="glass-card group relative overflow-hidden">
+              <div class="h-48 bg-gray-800 overflow-hidden relative">
+                <div
+                  class="absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-900 flex items-center justify-center"
+                >
+                  <i class="fas fa-file-pdf text-6xl text-white opacity-50"></i>
+                </div>
+                <div
+                  class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-4"
+                >
+                  <a
+                    href="https://github.com/Ambujpandey1"
+                    target="_blank"
+                    class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black hover:scale-110 transition"
+                    ><i class="fab fa-github"></i
+                  ></a>
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-white mb-2">DocuBrain</h3>
+                <p class="text-cyan-400 text-xs mb-3 font-mono">
+                  Next.js | TypeScript | Firebase | AI
+                </p>
+                <p class="text-gray-400 text-sm mb-4">
+                  AI-powered PDF analyzer for instant summaries, smart Q&A, and
+                  auto-quizzes. Helps users extract insights and assess
+                  knowledge via AI challenges.
+                </p>
+              </div>
+            </div>
+
+            <div class="glass-card group relative overflow-hidden">
+              <div class="h-48 bg-gray-800 overflow-hidden relative">
+                <div
+                  class="absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-900 flex items-center justify-center"
+                >
+                  <i class="fas fa-code text-6xl text-white opacity-50"></i>
+                </div>
+                <div
+                  class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-4"
+                >
+                  <a
+                    href="https://github.com/Ambujpandey1"
+                    target="_blank"
+                    class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black hover:scale-110 transition"
+                    ><i class="fab fa-github"></i
+                  ></a>
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-white mb-2">CodeFly</h3>
+                <p class="text-cyan-400 text-xs mb-3 font-mono">
+                  Next.js | MongoDB | NodeMailer | AI
+                </p>
+                <p class="text-gray-400 text-sm mb-4">
+                  Intelligent online code editor with AI auto-suggestions.
+                  Features authentication via Firebase and email notifications.
+                  Sleek, responsive UI for coding.
+                </p>
+              </div>
+            </div>
+
+            <div class="glass-card group relative overflow-hidden">
+              <div class="h-48 bg-gray-800 overflow-hidden relative">
+                <div
+                  class="absolute inset-0 bg-gradient-to-br from-green-600 to-teal-900 flex items-center justify-center"
+                >
+                  <i class="fas fa-smile text-6xl text-white opacity-50"></i>
+                </div>
+                <div
+                  class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-4"
+                >
+                  <a
+                    href="https://github.com/Ambujpandey1"
+                    target="_blank"
+                    class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black hover:scale-110 transition"
+                    ><i class="fab fa-github"></i
+                  ></a>
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-2xl font-bold text-white mb-2">EmotionIQ</h3>
+                <p class="text-cyan-400 text-xs mb-3 font-mono">
+                  Python | ML | NLP
+                </p>
+                <p class="text-gray-400 text-sm mb-4">
+                  Sentiment Analysis Tool analyzing user input as positive,
+                  negative, or neutral. Focuses on enhancing emotional
+                  intelligence through text analysis.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="achievements" class="py-20">
+        <div class="custom-container">
+          <div class="grid md:grid-cols-2 gap-12">
+            <div>
+              <h2 class="text-3xl font-bold mb-8 section-title">
+                Achievements
+              </h2>
+              <div class="space-y-4">
+                <div class="glass-card p-4 flex items-center gap-4">
+                  <div
+                    class="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-500 text-xl font-bold"
+                  >
+                    1st
+                  </div>
+                  <div>
+                    <h4 class="font-bold">CodQuest 84.0</h4>
+                    <p class="text-sm text-gray-400">
+                      Data Analyst Challenge (3rd Year)
+                    </p>
+                  </div>
+                </div>
+                <div class="glass-card p-4 flex items-center gap-4">
+                  <div
+                    class="w-12 h-12 rounded-full bg-gray-500/20 flex items-center justify-center text-gray-300 text-xl font-bold"
+                  >
+                    3rd
+                  </div>
+                  <div>
+                    <h4 class="font-bold">Blind Coding Competition</h4>
+                    <p class="text-sm text-gray-400">
+                      DSA Challenge (GNIOT) (2rd Year)
+                    </p>
+                  </div>
+                </div>
+                <div class="glass-card p-4 flex items-center gap-4">
+                  <div
+                    class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-500 text-xl font-bold"
+                  >
+                    Top 5
+                  </div>
+                  <div>
+                    <h4 class="font-bold">Coding Combat Competition</h4>
+                    <p class="text-sm text-gray-400">
+                      DSA Challenge(GNIOT) (1st Year)
+                    </p>
+                  </div>
+                </div>
+                <div class="glass-card p-4">
+                  <h4 class="font-bold text-center mb-2">
+                    Problem Solving Stats
+                  </h4>
+                  <div class="flex justify-around text-center">
+                    <div>
+                      <span class="block text-2xl font-bold text-orange-400"
+                        >400+</span
+                      >
+                      <span class="text-xs text-gray-400">LeetCode</span>
+                    </div>
+                    <div>
+                      <span class="block text-2xl font-bold text-green-400"
+                        >150+</span
+                      >
+                      <span class="text-xs text-gray-400">GeeksForGeeks</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h2 class="text-3xl font-bold mb-8 section-title">Activities</h2>
+              <div class="space-y-4">
+                <div class="glass-card p-4 hover:bg-slate-800 transition">
+                  <h4 class="font-bold text-white">
+                    <i class="fas fa-laptop-code text-cyan-400 mr-2"></i>
+                    Hackathon Participant
+                  </h4>
+                  <p class="text-sm text-gray-400 mt-1">
+                    Hack With Uttrakhand & HackOClock
+                  </p>
+                </div>
+                <div class="glass-card p-4 hover:bg-slate-800 transition">
+                  <h4 class="font-bold text-white">
+                    <i class="fas fa-paint-brush text-purple-400 mr-2"></i>
+                    Design Forge 2025
+                  </h4>
+                  <p class="text-sm text-gray-400 mt-1">
+                    UI/UX Challenge by YouTube India & CSI SRM
+                  </p>
+                </div>
+                <div class="glass-card p-4 hover:bg-slate-800 transition">
+                  <h4 class="font-bold text-white">
+                    <i class="fas fa-microphone text-pink-400 mr-2"></i> Debate
+                    Competitions
+                  </h4>
+                  <p class="text-sm text-gray-400 mt-1">
+                    Represented college in inter-departmental debates
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="py-20 bg-slate-900/30">
+        <div class="custom-container max-w-4xl">
+          <h2
+            class="text-3xl md:text-4xl font-bold mb-12 text-center section-title"
+          >
+            Get In Touch
+          </h2>
+
+          <div class="glass-card p-8 md:p-12">
+            <div class="grid md:grid-cols-2 gap-12">
+              <div class="space-y-8">
+                <h3 class="text-2xl font-bold">Let's Connect</h3>
+                <p class="text-gray-400">
+                  I'm currently seeking a Software Development role to build
+                  user-centric, AI-integrated web solutions.
+                </p>
+
+                <div class="space-y-4">
+                  <div class="flex items-center gap-4">
+                    <div
+                      class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-cyan-400"
+                    >
+                      <i class="fas fa-envelope"></i>
+                    </div>
+                    <span>ambujp863@gmail.com</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <div
+                      class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-cyan-400"
+                    >
+                      <i class="fas fa-phone"></i>
+                    </div>
+                    <span>+91-7518809266</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <div
+                      class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-cyan-400"
+                    >
+                      <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <span>Greater Noida, UP, India</span>
+                  </div>
+                </div>
+
+                <div class="flex gap-4 mt-6">
+                  <a
+                    href="https://linkedin.com/in/ambujpandey1"
+                    target="_blank"
+                    class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white hover:scale-110 transition"
+                    ><i class="fab fa-linkedin-in"></i
+                  ></a>
+                  <a
+                    href="https://github.com/Ambujpandey1"
+                    target="_blank"
+                    class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:scale-110 transition"
+                    ><i class="fab fa-github"></i
+                  ></a>
+                  <a
+                    href="https://leetcode.com/u/Ambuj_pandey/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="w-10 h-10 rounded-full bg-gray-500 flex items-center justify-center text-white hover:scale-110 transition"
+                    title="LeetCode Profile"
+                  >
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/1/19/LeetCode_logo_black.png"
+                      alt="LeetCode"
+                      class="w-6 h-6 object-contain"
+                    />
+                  </a>
+                  <a
+                    href="https://www.geeksforgeeks.org/profile/ambuj5730"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:scale-110 transition"
+                    title="GeeksforGeeks Profile"
+                  >
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/4/43/GeeksforGeeks.svg"
+                      alt="GeeksforGeeks"
+                      class="w-6 h-6 object-contain"
+                    />
+                  </a>
+                </div>
+              </div>
+
+              <form
+                class="space-y-4"
+                onsubmit="event.preventDefault(); alert('Thank you! This is a demo form.');"
+              >
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">Name</label>
+                  <input
+                    type="text"
+                    class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white focus:outline-none focus:border-cyan-400 transition"
+                    placeholder="Your Name"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">Email</label>
+                  <input
+                    type="email"
+                    class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white focus:outline-none focus:border-cyan-400 transition"
+                    placeholder="Your Email"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1"
+                    >Message</label
+                  >
+                  <textarea
+                    rows="4"
+                    class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-white focus:outline-none focus:border-cyan-400 transition"
+                    placeholder="TEXT ME ON MY LINKDIN OR EMAIL ME"
+                  ></textarea>
+                </div>
+                <button
+                  class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 rounded hover:shadow-lg transition transform hover:-translate-y-1"
+                >
+                  Send Message
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="py-8 text-center text-gray-500 text-sm bg-slate-950">
+        <p>&copy; 2025 Ambuj Kumar Pandey. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <script>
+      // --- 3D THREE.JS BACKGROUND ---
+      const initThreeJS = () => {
+        const container = document.getElementById("canvas-container");
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+        const renderer = new THREE.WebGLRenderer({
+          alpha: true,
+          antialias: true,
+        });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 700;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for (let i = 0; i < particlesCount * 3; i++) {
+          posArray[i] = (Math.random() - 0.5) * 15; // Spread
+        }
+
+        particlesGeometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(posArray, 3)
+        );
+
+        // Material
+        const material = new THREE.PointsMaterial({
+          size: 0.02,
+          color: 0x0ea5e9, // Tailwind cyan-500
+          transparent: true,
+          opacity: 0.8,
+        });
+
+        // Mesh
+        const particlesMesh = new THREE.Points(particlesGeometry, material);
+        scene.add(particlesMesh);
+
+        // Connecting Lines
+        const lineMaterial = new THREE.LineBasicMaterial({
+          color: 0x8b5cf6, // Tailwind purple-500
+          transparent: true,
+          opacity: 0.05,
+        });
+        const lineGeometry = new THREE.BufferGeometry();
+        const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+        scene.add(lines);
+
+        camera.position.z = 4;
+
+        // Mouse interaction
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener("mousemove", (event) => {
+          mouseX = event.clientX / window.innerWidth - 0.5;
+          mouseY = event.clientY / window.innerHeight - 0.5;
+        });
+
+        // Animation Loop
+        const clock = new THREE.Clock();
+
+        const animate = () => {
+          const elapsedTime = clock.getElapsedTime();
+
+          // Rotate entire system gently
+          particlesMesh.rotation.y = elapsedTime * 0.05;
+          particlesMesh.rotation.x = mouseY * 0.5;
+          particlesMesh.rotation.y += mouseX * 0.5;
+
+          renderer.render(scene, camera);
+          window.requestAnimationFrame(animate);
+        };
+
+        animate();
+
+        // Resize handling
+        window.addEventListener("resize", () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+      };
+
+      // Initialize Three.js
+      initThreeJS();
+
+      // --- SIDEBAR TOGGLE LOGIC ---
+      function toggleResume() {
+        const body = document.body;
+        const sidebar = document.getElementById("resume-sidebar");
+        const btnText = document.getElementById("btn-text");
+
+        body.classList.toggle("split-mode");
+        sidebar.classList.toggle("active");
+
+        if (sidebar.classList.contains("active")) {
+          btnText.innerText = "Close Resume";
+        } else {
+          btnText.innerText = "View Resume";
+        }
+      }
+
+      // Smooth Scrolling for Anchors
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute("href")).scrollIntoView({
+            behavior: "smooth",
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
