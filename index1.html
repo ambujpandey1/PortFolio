@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ambuj Pandey - Projects</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Outfit", "sans-serif"],
+            },
+            colors: {
+              dark: "#0f172a",
+              card: "#1e293b",
+              primary: "#3b82f6",
+              secondary: "#8b5cf6",
+              accent: "#10b981",
+            },
+            boxShadow: {
+              "3d": "0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+              "3d-hover":
+                "0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        background-color: #0f172a;
+        background-image: radial-gradient(
+            at 0% 0%,
+            rgba(59, 130, 246, 0.15) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 100% 0%,
+            rgba(139, 92, 246, 0.15) 0px,
+            transparent 50%
+          );
+        color: #e2e8f0;
+        overflow-x: hidden;
+      }
+
+      /* 1 inch margins as requested */
+      .page-container {
+        padding-left: 1in;
+        padding-right: 1in;
+        max-width: 100%;
+      }
+
+      @media (max-width: 768px) {
+        .page-container {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+      }
+
+      .project-card {
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transform-style: preserve-3d;
+      }
+
+      .project-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        z-index: 10;
+      }
+
+      /* Gradient Borders for cards */
+      .card-gradient-blue {
+        border-top: 4px solid #3b82f6;
+      }
+      .card-gradient-purple {
+        border-top: 4px solid #8b5cf6;
+      }
+      .card-gradient-green {
+        border-top: 4px solid #10b981;
+      }
+
+      .tech-tag {
+        backdrop-filter: blur(4px);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0f172a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #475569;
+      }
+
+      .profile-glow {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen pb-20">
+    <!-- Header Section -->
+    <header class="page-container py-10 mb-10">
+      <div
+        class="flex flex-col md:flex-row items-center justify-between gap-8 border-b border-gray-800 pb-8"
+      >
+        <!-- Left Side: Profile Intro -->
+        <div class="flex items-center gap-6 w-full md:w-1/3">
+          <div class="relative group">
+            <div
+              class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"
+            ></div>
+            <!-- Placeholder Profile Image - Replace 'src' with your local path if needed -->
+            <img
+              src="AmbujPhoto.jpeg"
+              alt="Ambuj Pandey"
+              class="relative w-24 h-24 rounded-full border-2 border-white/20 object-cover profile-glow bg-slate-800"
+            />
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-white tracking-tight">
+              Ambuj Pandey
+            </h2>
+            <p class="text-blue-400 font-medium">B.Tech CSE AIML</p>
+            <div class="flex gap-3 mt-2 text-gray-400">
+              <a
+                href="https://github.com/ambujpandey1"
+                target="_blank"
+                class="hover:text-white transition-colors"
+                ><i class="fab fa-github text-xl"></i
+              ></a>
+              <a
+                href="https://linkedin.com/in/Ambujpandey1"
+                target="_blank"
+                class="hover:text-white transition-colors"
+                ><i class="fab fa-linkedin text-xl"></i
+              ></a>
+              <a
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=ambujp2002@gmail.com"
+                target="_blank"
+                class="hover:text-white transition-colors"
+                ><i class="fas fa-envelope text-xl"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center/Right: Main Heading -->
+        <div class="w-full md:w-2/3 text-center md:text-right">
+          <h1
+            class="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 pb-2"
+          >
+            Featured Projects
+          </h1>
+          <p class="text-gray-400 mt-2 text-lg">
+            A collection of my work in AI, Web Dev & ML
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Projects Grid -->
+    <main class="page-container">
+      <!-- 
+            Grid Layout: 
+            - 1 column on mobile 
+            - 2 columns on tablet
+            - 3 columns on desktop (as requested)
+        -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        id="projects-grid"
+      >
+        <!-- Projects will be injected here via JavaScript for cleaner code maintenance -->
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer
+      class="mt-20 py-10 text-center text-gray-500 border-t border-gray-800 page-container"
+    >
+      <p>© 2025 Ambuj Pandey. Built with HTML, Tailwind CSS & JS.</p>
+    </footer>
+
+    <script>
+      // Project Data Array
+      // NOTE: Since local image paths don't work on the web, I've assigned theme colors and icons.
+      // If you are running this locally, you can change the 'image' property, but the CSS icons look very modern.
+      const projects = [
+        {
+          id: 1,
+          title: "CodeFly",
+          subtitle: "AI-Powered Code Editor",
+          date: "January 2025",
+          desc: "Intelligent online code editor with AI-based auto-suggestions. Users can write, save, and share code in a sleek UI.",
+          tech: ["Next.js", "Firebase", "MongoDB", "Nodemailer", "AI"],
+          github: "https://github.com/ambujpandey1/CodeFly",
+          live: "https://code-fly.vercel.app/",
+          color: "purple",
+          icon: "fa-code",
+        },
+        {
+          id: 2,
+          title: "SkillSprint",
+          subtitle: "AI Interview Practice Hub",
+          date: "Aug 2025",
+          desc: "Mock interview platform with AI-driven analytics, speech & sentiment analysis to boost interview readiness.",
+          tech: ["MERN", "TypeScript", "Gemini", "Vapi", "NLP"],
+          github: "https://github.com/ambujpandey1/SkillSprint",
+          live: "https://skill-sprint-omega.vercel.app/",
+          color: "blue",
+          icon: "fa-users-viewfinder",
+        },
+        {
+          id: 3,
+          title: "DocuBrain",
+          subtitle: "AI Powered PDF Analyzer",
+          date: "May - Jun 2025",
+          desc: "Upload PDFs to get instant summaries, smart Q&A, and auto-generated quizzes using Contextual Intelligence.",
+          tech: ["Next.js", "TypeScript", "Firebase", "Gemini AI"],
+          github: "https://github.com/ambujpandey1/DocuBrain",
+          live: "https://docu-brain.vercel.app/",
+          color: "green",
+          icon: "fa-file-pdf",
+        },
+        {
+          id: 4,
+          title: "EmotionIQ",
+          subtitle: "Sentiment Analysis Tool",
+          date: "Sep - Oct 2024",
+          desc: "AI-driven tool classifying text into positive, negative, or neutral categories using NLP classifiers.",
+          tech: ["Python", "ML", "NLP", "NumPy", "Pandas"],
+          github: "https://github.com/ambujpandey1/EmotionIQ",
+          live: "https://emotioniq.streamlit.app/",
+          color: "green",
+          icon: "fa-face-smile",
+        },
+        {
+          id: 5,
+          title: "PersonalityNet",
+          subtitle: "Behavior Prediction",
+          date: "August 2025",
+          desc: "AI model classifying individuals as extrovert or introvert based on textual data using supervised learning.",
+          tech: ["Python", "TensorFlow", "Sklearn", "NLP"],
+          github: "https://github.com/ambujpandey1/HumanBeh",
+          live: "https://humanbeh.onrender.com/",
+          color: "purple",
+          icon: "fa-brain",
+        },
+        {
+          id: 6,
+          title: "AmbujPortfolio",
+          subtitle: "Personal Portfolio",
+          date: "2025",
+          desc: "Attractive personal portfolio showcasing education, projects, skills, and training certificates.",
+          tech: ["React", "HTML/CSS", "Design"],
+          github: "https://github.com/ambujpandey1/PortFolio",
+          live: "https://ambujport.vercel.app/",
+          color: "blue",
+          icon: "fa-user-tie",
+        },
+        {
+          id: 7,
+          title: "Calculator",
+          subtitle: "Scientific Calculator",
+          date: "2024",
+          desc: "A fully functional and attractive scientific calculator built with vanilla web technologies.",
+          tech: ["HTML", "CSS", "JavaScript"],
+          github: "https://github.com/ambujpandey1/Calculator",
+          live: "https://calculatorap.vercel.app/",
+          color: "purple",
+          icon: "fa-calculator",
+        },
+        {
+          id: 8,
+          title: "ToDoList",
+          subtitle: "Task Manager",
+          date: "2024",
+          desc: "A clean and attractive To-Do list application to manage daily tasks efficiently.",
+          tech: ["HTML", "CSS", "JavaScript"],
+          github: "https://github.com/ambujpandey1/To-Do_List",
+          live: "https://todoambuj.vercel.app/",
+          color: "blue",
+          icon: "fa-list-check",
+        },
+        {
+          id: 9,
+          title: "IndependenceDay",
+          subtitle: "Celebration Site",
+          date: "2024",
+          desc: "A fun and interactive web page celebrating Independence Day with animations.",
+          tech: ["HTML", "CSS", "Animations"],
+          github: "https://github.com/ambujpandey1/independentDay",
+          live: "https://independent-day.vercel.app/",
+          color: "green",
+          icon: "fa-flag",
+        },
+      ];
+
+      const grid = document.getElementById("projects-grid");
+
+      // Function to render projects
+      function renderProjects() {
+        projects.forEach((project) => {
+          // Determine gradient class based on data
+          let gradientClass = "card-gradient-blue";
+          let iconBg = "bg-blue-500/20 text-blue-400";
+
+          if (project.color === "purple") {
+            gradientClass = "card-gradient-purple";
+            iconBg = "bg-purple-500/20 text-purple-400";
+          } else if (project.color === "green") {
+            gradientClass = "card-gradient-green";
+            iconBg = "bg-emerald-500/20 text-emerald-400";
+          }
+
+          // Create Card HTML
+          const card = document.createElement("div");
+          card.className = `project-card bg-card rounded-xl p-6 relative overflow-hidden flex flex-col h-full shadow-3d ${gradientClass}`;
+
+          card.innerHTML = `
+                    <!-- Background Glow -->
+                    <div class="absolute -top-20 -right-20 w-40 h-40 bg-${
+                      project.color
+                    }-500 rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+
+                    <!-- Header: Icon & Date -->
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-lg ${iconBg} flex items-center justify-center text-2xl">
+                            <i class="fa-solid ${project.icon}"></i>
+                        </div>
+                        <span class="text-xs font-mono text-gray-500 bg-gray-800/50 px-2 py-1 rounded">${
+                          project.date
+                        }</span>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="mb-4 flex-grow">
+                        <h3 class="text-xl font-bold text-white mb-1 group-hover:text-${
+                          project.color
+                        }-400 transition-colors">${project.title}</h3>
+                        <p class="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">${
+                          project.subtitle
+                        }</p>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                            ${project.desc}
+                        </p>
+                        
+                        <!-- Tech Stack Tags -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${project.tech
+                              .map(
+                                (t) =>
+                                  `<span class="tech-tag text-xs text-gray-300 px-2 py-1 rounded-md">${t}</span>`
+                              )
+                              .join("")}
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-3 mt-auto pt-4 border-t border-gray-700/50">
+                        <a href="${
+                          project.github
+                        }" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium transition-all flex items-center justify-center gap-2 group">
+                            <i class="fab fa-github"></i> Code
+                        </a>
+                        <a href="${
+                          project.live
+                        }" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-${
+            project.color === "purple"
+              ? "purple-600"
+              : project.color === "green"
+              ? "emerald-600"
+              : "blue-600"
+          } hover:brightness-110 text-white text-sm font-medium transition-all shadow-lg shadow-${
+            project.color
+          }-500/20 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Live
+                        </a>
+                    </div>
+                `;
+
+          grid.appendChild(card);
+        });
+      }
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", renderProjects);
+    </script>
+  </body>
+</html>
